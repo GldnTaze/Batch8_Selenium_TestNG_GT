@@ -23,7 +23,7 @@ public class _2_JS_ExectuerDemo {
         driver = WebDriverFactory.getDriver("chrome");
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        actions=new Actions(driver);
+        actions = new Actions(driver);
 
 
     }
@@ -31,7 +31,7 @@ public class _2_JS_ExectuerDemo {
     @AfterMethod
     public void tearDown() throws InterruptedException {
         Thread.sleep(2000);
-      //  driver.quit();
+        driver.quit();
     }
 
     @Test
@@ -47,22 +47,19 @@ public class _2_JS_ExectuerDemo {
          */
 
         driver.get("https://www.amazon.com.tr/");
-       driver.findElement(By.id("sp-cc-accept")).click();
-       WebElement almanya = driver.findElement(By.linkText("Almanya"));
+        driver.findElement(By.id("sp-cc-accept")).click();
+        WebElement almanya = driver.findElement(By.linkText("Almanya"));
 
 
-        JavascriptExecutor jse= (JavascriptExecutor) driver;
+        JavascriptExecutor jse = (JavascriptExecutor) driver;
         Thread.sleep(2000);
 
         jse.executeScript("arguments[0].click();", almanya);
 
         Thread.sleep(2000);
         driver.findElement(By.id("sp-cc-accept")).click();
-        String currentUrl=driver.getCurrentUrl();
+        String currentUrl = driver.getCurrentUrl();
         Assert.assertTrue(currentUrl.contains("amazon.de"));
-
-
-
 
 
     }
@@ -75,16 +72,15 @@ public class _2_JS_ExectuerDemo {
          *
          * note : ask google--> how to sendKeys using JSExecutor
          */
-      driver.get("https://the-internet.herokuapp.com/dynamic_controls");
+        driver.get("https://the-internet.herokuapp.com/dynamic_controls");
         WebElement texBox = driver.findElement(By.cssSelector("#input-example>input"));
-        String text="Hello World!";
+        String text = "Hello World!";
 
-          JavascriptExecutor jse= (JavascriptExecutor) driver;
-        jse.executeScript("arguments[0].value='"+text+"';", texBox);
+        JavascriptExecutor jse = (JavascriptExecutor) driver;
+        jse.executeScript("arguments[0].value='" + text + "';", texBox);
 
 
     }
-
 
 
     @Test
@@ -97,13 +93,13 @@ public class _2_JS_ExectuerDemo {
 
         driver.get("https://www.amazon.com.tr/");
         driver.findElement(By.id("sp-cc-accept")).click();
-        JavascriptExecutor jse= (JavascriptExecutor) driver;
-      //  jse.executeScript("window.scrollBy(0,4000)");
-        for (int i = 0; i <10 ; i++) {
-            Thread.sleep(0,1000);
+        JavascriptExecutor jse = (JavascriptExecutor) driver;
+        //  jse.executeScript("window.scrollBy(0,4000)");
+        for (int i = 0; i < 10; i++) {
+            Thread.sleep(0, 1000);
             jse.executeScript("window.scrollBy(0,5000)");
         }
-        for (int i = 0; i <10 ; i++) {
+        for (int i = 0; i < 10; i++) {
             Thread.sleep(1000);
             jse.executeScript("window.scrollBy(0,-5000)");
         }
@@ -121,14 +117,14 @@ public class _2_JS_ExectuerDemo {
 
         driver.get("https://www.amazon.com.tr/");
         driver.findElement(By.id("sp-cc-accept")).click();
-        JavascriptExecutor jse= (JavascriptExecutor) driver;
+        JavascriptExecutor jse = (JavascriptExecutor) driver;
         WebElement almanya = driver.findElement(By.linkText("Almanya"));
-      // jse.executeScript ("arguments[0].scrollIntoView(true);", almanya); //almanya ya git
-        jse.executeScript("arguments[0].scrollIntoView(true);" + "arguments[0].click()",almanya); //git clik yap
+        // jse.executeScript ("arguments[0].scrollIntoView(true);", almanya); //almanya ya git
+        jse.executeScript("arguments[0].scrollIntoView(true);" + "arguments[0].click()", almanya); //git clik yap
 
         Thread.sleep(2000);
         driver.findElement(By.id("sp-cc-accept")).click();
-        String currentUrl=driver.getCurrentUrl();
+        String currentUrl = driver.getCurrentUrl();
         Assert.assertTrue(currentUrl.contains("amazon.de"));
     }
 
@@ -152,16 +148,54 @@ public class _2_JS_ExectuerDemo {
          */
 
         driver.get("https://www.krafttechexlab.com/forms/elements");
-        JavascriptExecutor jse= (JavascriptExecutor) driver;
+        JavascriptExecutor jse = (JavascriptExecutor) driver;
         jse.executeScript("window.scrollBy(0,1000)");
 
-       WebElement range = driver.findElement(By.cssSelector("#customRange1"));
-      Thread.sleep(2000);
+        WebElement range = driver.findElement(By.cssSelector("#customRange1"));
+        Thread.sleep(2000);
 
       actions.dragAndDropBy(range, 400, 0).perform();
 
+        WebElement disabled = driver.findElement(By.id("disabledRange"));
+        jse.executeScript("arguments[0].setAttribute('min', '-25')",disabled);
+        Thread.sleep(3000);
+
+        //numbere kadar scroll yap
+        WebElement number = driver.findElement(By.xpath("//label[text()='Number']"));
+        jse.executeScript("arguments[0].scrollIntoView()",number);
+        Thread.sleep(2000);
+        //renk degistir
+        WebElement color = driver.findElement(By.id("exampleColorInput"));
+       jse.executeScript("arguments[0].setAttribute('value', '#FF0000')",color);
+
+        //select the Disabled Radio 3 button
+        WebElement disableRadioBox = driver.findElement(By.id("gridRadios"));
+        jse.executeScript("arguments[0].setAttribute('checked','true')", disableRadioBox);
+        Thread.sleep(3000);
+
+        //scroll to the submit button
+        WebElement submit = driver.findElement(By.xpath("//button[@name='submit']"));
+        Thread.sleep(3000);
+        jse.executeScript("arguments[0].scrollIntoView();", submit);
+        Thread.sleep(3000);
+
+        //scroll again to the number label
+        jse.executeScript("arguments[0].scrollIntoView();", number);
+        Thread.sleep(3000);
+
+        //scroll to the submit button and click on it
+        jse.executeScript("arguments[0].scrollIntoView(true);" + "arguments[0].click()", submit);
+
+        Thread.sleep(3000);
+
+        String actualTitle=jse.executeScript("return document.title;").toString();
+        String currentURL=jse.executeScript("return document.URL;").toString();
+
+        Assert.assertTrue(actualTitle.contains("Kraft"));
 
     }
-
-
 }
+
+
+
+

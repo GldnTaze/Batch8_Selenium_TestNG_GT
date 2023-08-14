@@ -2,6 +2,7 @@ package com.eurotech.tests.day_15_action_fileUpload_jsExecutor;
 
 import com.eurotech.utilities.WebDriverFactory;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -13,6 +14,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -112,6 +114,35 @@ public class _1_action {
      */
 
 
+    /*--->dıger yol
+
+     driver.get("https://the-internet.herokuapp.com/hovers");
+     //(//img)[2]
+     //(//img)[3]
+     //(//img)[4]
+
+     //alttaki isimler
+     //h5[text()='name:user1']
+     //h5[text()='name:user2']
+     //h5[text()='name:user3']
+
+        Actions actions = new Actions(driver);
+        for (int i = 2; i <=4 ; i++) {
+
+            String imgXpath="(//img)["+i+"]";
+            //üzerinde hover yapılan elementlere img dersek
+            WebElement img=driver.findElement(By.xpath(imgXpath));
+
+            actions.moveToElement(img).perform();
+
+            String textXpath="//h5[text()='name: user"+(i-1)+"']";
+           //üzerinde hover yapılınca altta çıkan yazılara text dersek
+            WebElement text=driver.findElement(By.xpath(textXpath));
+
+            Assert.assertTrue(new WevDriverWait,10).until(ExpectedConditions.visibilityOf(user)).isDisplayed());
+     */
+
+
 
 
     @Test
@@ -185,5 +216,33 @@ public class _1_action {
         actions.click(resetBtn).perform();
 
 
+    }
+
+    @Test
+    public void rigtClickOpenNewTab() throws InterruptedException {
+
+        //tikladigin yeri yeni sayfada acma
+
+        /**
+         * go to https://testpages.herokuapp.com/styled/csspseudo/css-hover.html
+         * make right click and open in new tab  (sağ ctrl+click)
+         * switch to new opened tab
+         * verify that the page title is "EvilTester.com"
+         */
+      //ctrl+sag click yeni pencerede acar
+        driver.get("https://testpages.herokuapp.com/styled/csspseudo/css-hover.html");
+        Thread.sleep(2000);
+        WebElement link = driver.findElement(By.linkText("EvilTester.com"));
+
+        actions.keyDown(Keys.LEFT_CONTROL)//keyDown basili tut demek
+                .click(link)
+                .keyUp(Keys.LEFT_CONTROL)//elimizi ctrl tusundan kaldir
+                .build()
+                .perform();
+        ArrayList<String>tabs=new ArrayList<>(driver.getWindowHandles());
+        driver.switchTo().window(tabs.get(1));
+        String actualTitle= driver.getTitle();
+        String expectedTitle="EvilTester.com";
+        Assert.assertEquals(actualTitle,expectedTitle);
     }
 }

@@ -60,7 +60,7 @@ public class _2_odev {
     }
 
     @Test
-    public void test_2() {
+    public void test_2() throws InterruptedException {
         /**
          * navigate to https://the-internet.herokuapp.com/iframe
          * get te text of heading "An iFrame containing the TinyMCE WYSIWYG Editor" and print it
@@ -69,10 +69,25 @@ public class _2_odev {
          * get te text of heading "An iFrame containing the TinyMCE WYSIWYG Editor" and print it again.
          * NOT : frame geçişlerinde index kullanalım. index 0'dan başlar..
          */
+        driver.get("https://the-internet.herokuapp.com/iframe");
+        WebElement title = driver.findElement(By.xpath("//textarea[@id='mce_0']/../h3"));
+        System.out.println("title = " + title);
+
+        driver.switchTo().frame(0);
+        WebElement targetElement = driver.findElement(By.xpath("//p"));
+        targetElement.clear();
+        Thread.sleep(2000);
+        targetElement.sendKeys("Hello World!");
+
+        driver.switchTo().defaultContent();
+
+        WebElement upTitle1 = driver.findElement(By.xpath("//textarea[@id='mce_0']/../h3"));
+        System.out.println("upTitle1.getText() = " + upTitle1.getText());
+
     }
 
     @Test
-    public void test_3() {
+    public void test_3() throws InterruptedException {
         /**
          * navigate to https://the-internet.herokuapp.com/iframe
          * get te text of heading "An iFrame containing the TinyMCE WYSIWYG Editor" and print it
@@ -81,6 +96,36 @@ public class _2_odev {
          * get te text of heading "An iFrame containing the TinyMCE WYSIWYG Editor" and print it again.
          * NOT : frame geçişlerinde web element kullanalım.
          */
+
+
+        driver.get("https://the-internet.herokuapp.com/iframe");
+        Thread.sleep(2000);
+
+        WebElement upTitle = driver.findElement(By.xpath("//textarea[@id='mce_0']/../h3"));
+        System.out.println("upTitle.getText() = " + upTitle.getText());
+
+        WebElement frame = driver.findElement(By.cssSelector("#mce_0_ifr"));
+        //switch driver by webelement
+        driver.switchTo().frame(frame);
+
+        WebElement targetElement = driver.findElement(By.xpath("//p[text()='Your content goes here.']"));
+
+        //remove the text
+        targetElement.clear();
+
+        Thread.sleep(2000);
+
+        //send a new text and confirm
+        targetElement.sendKeys("Hello World!");
+
+        Thread.sleep(2000);
+
+        //switch driver to the parent (default) HMTL
+        driver.switchTo().parentFrame();
+
+        WebElement upTitle1 = driver.findElement(By.xpath("//textarea[@id='mce_0']/../h3"));
+        System.out.println("upTitle1.getText() = " + upTitle1.getText());
+
     }
 
     @Test
